@@ -1,10 +1,13 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const app = express();
+const mongoose = require('mongoose');
+const dotenv= require('dotenv');
+
+dotenv.config({path:'./config.env'});
 
 
 /*---------------------database_connection----------------------*/
-const DB='mongodb+srv://imtiaz_2001:imtiaz123@cluster0.zm508.mongodb.net/mern_stack?retryWrites=true&w=majority';
+const DB=process.env.DATABASE;
 
 mongoose.connect(DB,{
       useNewUrlParser:true,
