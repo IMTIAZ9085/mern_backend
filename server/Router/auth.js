@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcryptjs');
 
 /*-----------------database connection----------------------------*/
 require("../DB/conn");
@@ -58,26 +59,36 @@ router.post('/register', async (req, res) => {
                   return res.status(422).json({
                         error: "Email already registered"
                   });
-            }
-            //name:name email:email(something like that es6 property)
-            const user = new User({
-                  name,
-                  email,
-                  phoneNo,
-                  work,
-                  password,
-                  C_password
-            });
-            const dataSave = await user.save();
-
-            if (dataSave) {
-                  res.status(201).json({
-                        message: "successfully registered"
+            } else if (password != C_password) {
+                  return res.status(422).json({
+                        error: "Password are no matching"
                   });
             } else {
-                  res.status(500).json({
-                        error: "Register Failed"
-                  })
+                  //name:name email:email(something like that es6 property)
+                  const user = new User({
+                        name,
+                        email,
+                        phoneNo,
+                        work,
+                        password,
+                        C_password
+                  });
+
+                  //middleware in userSchma page
+                  const dataSave = await user.save();
+
+
+                  if (dataSave) {
+                        res.status(201).json({
+                              message: "successfully registered"
+                        });
+                  } else {
+                        res.status(500).json({
+                              error: "Register Failed"
+                        })
+                  }
+
+
             }
 
       } catch (err) {
@@ -89,7 +100,48 @@ router.post('/register', async (req, res) => {
 });
 
 
+//login-page
+router.post('/login', async (req, res) => {
+      try {
+            const {
+                  email,
+                  password
+            } = req.body;
 
+            if (!email || !password) {
+                  return res.status(400).json({
+                        error: "Fill All the Field"
+                  });
+            }
+            const userLogin = await User.findOne({
+                  email: email
+            }); //this gives the all details about this email id
+
+            if (userLogin) {
+                  const Password_match = await bcrypt.compare(password, userLogin.password);
+                  if (!Password_match) {
+                        res.status(400).json({
+                              error: "Invalid Credentials"
+                        })
+                  } else {
+                        res.status(201).json({
+                              message: "Login successfull"
+                        })
+                  }
+
+            } else {
+                  res.status(400).json({
+                        error: "Invalid Credentials"
+                  })
+            }
+
+
+
+      } catch (err) {
+            console.log(err);
+      }
+
+});
 
 
 //about-page
@@ -100,11 +152,6 @@ router.get('/about', (req, res) => {
 //contact-page
 router.get('/contact', (req, res) => {
       res.send('Hello World! contact page from server');
-});
-
-//login-page
-router.get('/login', (req, res) => {
-      res.send('Hello World! login page from server');
 });
 
 
