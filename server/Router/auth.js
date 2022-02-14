@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 /*-----------------database connection----------------------------*/
 require("../DB/conn");
@@ -119,6 +120,17 @@ router.post('/login', async (req, res) => {
 
             if (userLogin) {
                   const Password_match = await bcrypt.compare(password, userLogin.password);
+
+                  //----------------------jwt authentication-----------------------------------------------
+                  //function define in userSchema
+                  const token = await userLogin.generateAuthToken();
+                  // console.log(token);
+                  //now we are storing the token in the cookie
+                  res.cookie("jwtoken", token, {
+                        expires: new Date(Date.now() + 25892000000),
+                        httpOnly: true
+                  });
+
                   if (!Password_match) {
                         res.status(400).json({
                               error: "Invalid Credentials"
