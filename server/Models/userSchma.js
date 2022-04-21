@@ -16,7 +16,7 @@ const userSchma = new mongoose.Schema({
             type: Number,
             required: true
       },
-      work: {
+      profession: {
             type: String,
             required: true
       },
@@ -64,7 +64,7 @@ userSchma.methods.generateAuthToken = async function () {
             this.tokens = this.tokens.concat({
                   token: new_token
             });
-            this.save();
+             this.save();
 
             return new_token;
 

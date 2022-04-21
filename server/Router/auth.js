@@ -19,12 +19,12 @@ router.post('/register', async (req, res) => {
             name,
             email,
             phoneNo,
-            work,
+            profession,
             password,
             C_password
       } = req.body;
 
-      if (!name || !email || !phoneNo || !work || !password || !C_password) {
+      if (!name || !email || !phoneNo || !profession || !password || !C_password) {
             return res.status(422).json({
                   error: "plz fill all the field"
             });
@@ -41,7 +41,7 @@ router.post('/register', async (req, res) => {
       //             return res.status(422).json({error:"plz fill all the field properly"});
       //            }
       //                                //name:name email:email(something like that es6 property)
-      //            const user=new User({name, email, phoneNo, work, password, C_password});
+      //            const user=new User({name, email, phoneNo, profession, password, C_password});
       //            user.save().then(()=>{
       //                  res.status(201).json({message:"successfully registered"});
       //            }).catch((err)=>res.status(500).json({error:"Register Failed"}));
@@ -70,7 +70,7 @@ router.post('/register', async (req, res) => {
                         name,
                         email,
                         phoneNo,
-                        work,
+                        profession,
                         password,
                         C_password
                   });
@@ -125,6 +125,8 @@ router.post('/login', async (req, res) => {
                   //function define in userSchema
                   const token = await userLogin.generateAuthToken();
                   // console.log(token);
+
+                  
                   //now we are storing the token in the cookie
                   res.cookie("jwtoken", token, {
                         expires: new Date(Date.now() + 25892000000),

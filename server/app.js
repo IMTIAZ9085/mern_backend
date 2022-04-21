@@ -13,6 +13,8 @@ require('./DB/conn'); //database_connection
 
 app.use(express.json()); //it is simply changing the jason data in string mode
 
+
+
 const PORT = process.env.PORT;
 
 // const User = require('./Models/userSchma');
